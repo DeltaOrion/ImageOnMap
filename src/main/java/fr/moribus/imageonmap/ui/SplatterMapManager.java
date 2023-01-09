@@ -47,11 +47,7 @@ import fr.zcraft.quartzlib.tools.world.FlatLocation;
 import fr.zcraft.quartzlib.tools.world.WorldUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Rotation;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ItemFrame;
@@ -88,8 +84,15 @@ public abstract class SplatterMapManager {
         meta.setDisplayName(ChatColor.GOLD + map.getName() + ChatColor.DARK_GRAY + " - " + I.t("Splatter Map")
                 + ChatColor.DARK_GRAY + " - " + I.t("{0} × {1}", map.getColumnCount(), map.getRowCount()));
 
+        OfflinePlayer p = Bukkit.getOfflinePlayer(map.getUserUUID());
+        String name = map.getUserUUID().toString();
+        if(p.getName()!=null) {
+            name = p.getName();
+        }
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + map.getId());
+        lore.add(ChatColor.GOLD+"Name: "+ChatColor.WHITE+name);
+        lore.add(ChatColor.GOLD+"UUID: "+ChatColor.WHITE+map.getUserUUID().toString());
         lore.add("");
         lore.add(ChatColor.BLUE + I.t("Item frames needed"));
         lore.add(ChatColor.GRAY + I.t("{0} × {1} (total {2} frames)", map.getColumnCount(), map.getRowCount(),

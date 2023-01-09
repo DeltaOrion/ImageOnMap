@@ -152,7 +152,7 @@ public class MapListGui extends ExplorerGui<ImageMap> {
         }
 
         if (map instanceof SingleMap) {
-            return MapItemManager.createMapItem(map.getMapsIDs()[0], map.getName(), false, true);
+            return MapItemManager.createMapItem(map.getMapsIDs()[0],map.getUserUUID(), map.getName(), false, true);
         } else if (map instanceof PosterMap) {
             PosterMap poster = (PosterMap) map;
 

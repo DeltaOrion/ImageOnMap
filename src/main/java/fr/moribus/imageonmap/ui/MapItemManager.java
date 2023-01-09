@@ -45,19 +45,10 @@ import fr.moribus.imageonmap.map.PosterMap;
 import fr.moribus.imageonmap.map.SingleMap;
 import fr.zcraft.quartzlib.tools.items.ItemUtils;
 import fr.zcraft.quartzlib.tools.runners.RunTask;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Queue;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Rotation;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
+import java.util.*;
+
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
@@ -75,6 +66,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MapItemManager implements Listener {
@@ -149,19 +141,19 @@ public class MapItemManager implements Listener {
     }
 
     public static ItemStack createMapItem(SingleMap map, boolean goldTitle) {
-        return createMapItem(map.getMapsIDs()[0], map.getName(), false, goldTitle);
+        return createMapItem(map.getMapsIDs()[0],map.getUserUUID(), map.getName(), false, goldTitle);
     }
 
     public static ItemStack createMapItem(PosterMap map, int index) {
-        return createMapItem(map.getMapIdAt(index), getMapTitle(map, index), true);
+        return createMapItem(map.getMapIdAt(index),map.getUserUUID(), getMapTitle(map, index), true);
     }
 
     public static ItemStack createMapItem(PosterMap map, int x, int y) {
-        return createMapItem(map.getMapIdAt(x, y), getMapTitle(map, y, x), true);
+        return createMapItem(map.getMapIdAt(x, y),map.getUserUUID(), getMapTitle(map, y, x), true);
     }
 
-    public static ItemStack createMapItem(int mapID, String text, boolean isMapPart) {
-        return createMapItem(mapID, text, isMapPart, false);
+    public static ItemStack createMapItem(int mapID, UUID userId, String text, boolean isMapPart) {
+        return createMapItem(mapID,userId, text, isMapPart, false);
     }
 
     /**
@@ -197,13 +189,23 @@ public class MapItemManager implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    public static ItemStack createMapItem(int mapID, String text, boolean isMapPart, boolean goldTitle) {
+    public static ItemStack createMapItem(int mapID, UUID player, String text, boolean isMapPart, boolean goldTitle) {
         ItemStack mapItem = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) mapItem.getItemMeta();
+        OfflinePlayer p = Bukkit.getOfflinePlayer(player);
+        String name = player.toString();
+        if(p.getName()!=null) {
+            name = p.getName();
+        }
+
         meta.setDisplayName((goldTitle ? ChatColor.GOLD : "") + text);
         meta.addItemFlags(ItemFlag.values());
         meta.setMapId(mapID);
         meta.setColor(isMapPart ? Color.LIME : Color.GREEN);
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GOLD + "Player: "+ ChatColor.WHITE+name);
+        lore.add(ChatColor.GOLD+" P uuid: "+ChatColor.WHITE+player);
+        meta.setLore(lore);
         mapItem.setItemMeta(meta);
         return mapItem;
     }
